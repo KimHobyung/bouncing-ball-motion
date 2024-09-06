@@ -106,12 +106,3 @@ plt.legend()
 plt.xlabel('x (m)')
 plt.ylabel('y (m)')
 plt.show()
-
-
-import pandas as pd
-
-data = {'x' : position_x,
-        'y' : position_y
-        }
-data = pd.DataFrame(data)
-data.to_excel('60 degree.xlsx')
