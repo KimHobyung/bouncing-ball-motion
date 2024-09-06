@@ -167,16 +167,6 @@ ax.set_xlim(np.min(position_x), np.max(position_x))
 ax.set_ylim(np.min(position_y), np.max(position_y)+5)
 ax.set_xlabel('X')
 ax.set_ylabel('Y')
-# ax.set_title('Time-varying Transparency Curve')
+ax.set_title('xy bouncing motion')
 
 plt.show()
-
-'''
-import pandas as pd
-
-data = {'x' : position_x,
-        'y' : position_y
-        }
-data = pd.DataFrame(data)
-data.to_excel('60 degree.xlsx')
-'''
