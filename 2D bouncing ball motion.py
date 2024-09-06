@@ -7,9 +7,9 @@ from matplotlib.collections import LineCollection
 import matplotlib.pyplot as plt
 
 # 초기 조건
-left_wall, right_wall = -20, 20
+left_wall, right_wall = -50, 50
 x_i, y_i = 0, 10 # 초기 위치
-v_xi, v_yi =  15, 20 # 초기 속도
+v_xi, v_yi =  10, 5 # 초기 속도
 w_i = 10 # 초기 각속도
 m = 1 # 질량
 R = 5 # 반지름
@@ -30,10 +30,6 @@ v_x, v_y = v_xi, v_yi # 속도
 w = w_i # 각속도
 dt = 0.01 # 시간 간격
 
-# 모션이 복잡하여 시간에 따라 점점 투명해지는 그래프가 필요함
-segments = []
-colors = []
-
 
 position_x = [] # 시간 간격에 대한 공의 x 위치
 position_y = [] # 시간 간격에 대한 공의 y 위치
@@ -42,7 +38,7 @@ v_list = [[v_xi, v_yi]] # 시간 간격에 대한 공의 속도
 w_list = [w_i] # 시간 간격에 대한 공의 각속도
 E_list = [E] # 튕길 때 마다 총 에너지 기록
 
-x_v_list = [[v_xi, v_yi]]
+x_v_list = [[v_xi, v_yi]] # 벽에 튕길 때 바뀌는 속도를 기록
 
 while E > 0 and count < 15: # 초기 에너지가 0이 될 때 까지 반복한다. 만약 10번 튕겨도 에너지가 0이 아니라면 시뮬레이션 종료
 
@@ -56,7 +52,6 @@ while E > 0 and count < 15: # 초기 에너지가 0이 될 때 까지 반복한�
             position_x.append(x)
             position_y.append(y)
 
-         
 
 
         else: # 벽에 튕기는 경우
@@ -64,10 +59,10 @@ while E > 0 and count < 15: # 초기 에너지가 0이 될 때 까지 반복한�
 
             if abs(w_list[-1]) > (1/(c*R))*(1+e)*abs(x_v_list[-1][0]):
 
-                w = w_list[-1]+(-1)*(w_list[-1]/abs(w_list[-1]))*(1/(c*R))*(1+e)*(x_v_list[-1][0]/abs(x_v_list[-1][0]))*x_v_list[-1][0]
+                w = w_list[-1]+(-1)*(w_list[-1]/abs(w_list[-1]))*(1/(c*R))*(1+e)*(x_v_list[-1][0]/abs(x_v_list[-1][0]))*x_v_list[-1][0]*(x/abs(x))
                 w_list.append(w)
 
-                v_yf2 = v_y +(-1)*mu*(1+e)*(x_v_list[-1][0]/abs(x_v_list[-1][0]))*(v_y/abs(v_y))*v_y
+                v_yf2 = v_y +(-1)*mu*(1+e)*(x_v_list[-1][0]/abs(x_v_list[-1][0]))*(v_x/abs(v_x))*v_x*(x/abs(x))
             else:
                 v_yf2 = v_y
                 w = w_list[-1]
@@ -76,6 +71,7 @@ while E > 0 and count < 15: # 초기 에너지가 0이 될 때 까지 반복한�
             v_x = v_xf2
             v_y = v_yf2
 
+            # 위치 재설정
             if x >= right_wall:
                 x = right_wall - 0.1
             elif x <= left_wall:
@@ -116,7 +112,7 @@ while E > 0 and count < 15: # 초기 에너지가 0이 될 때 까지 반복한�
         else: # 두번째 이후로 튕길 때
 
             if abs(w_list[-1]) > (1/(c*R))*mu*(1+e)*v_list[-1][1]:
-                v_xf = v_list[-1][0] +(v_list[-1][0]/(abs(v_list[-1][0])))*((1/(c*R))-1*((w_list[-1]/abs(w_list[-1]))*(v_list[-1][0]/(abs(v_list[-1][0])))))*mu*(1+e)*v_list[-1][1]
+                v_xf = v_list[-1][0] +(v_list[-1][0]/(abs(v_list[-1][0])))*((1/(c*R))-1*((w_list[-1]/abs(w_list[-1]))*(v_list[-1][0]/(abs(v_list[-1][0])))))*mu*(1+e)*v_list[-1][1]*(x/abs(x))
             else:
                 v_xf = v_list[-1][0] - (v_list[-1][0]/(abs(v_list[-1][0])))*mu*(1+e)*v_list[-1][1]
 
@@ -165,8 +161,9 @@ ax.add_collection(lc)
 ax.autoscale()
 ax.set_xlim(np.min(position_x), np.max(position_x))
 ax.set_ylim(np.min(position_y), np.max(position_y)+5)
-ax.set_xlabel('X')
-ax.set_ylabel('Y')
-ax.set_title('xy bouncing motion')
+ax.set_xlabel('x (m)')
+ax.set_ylabel('y (m)')
+ax.set_title('origin to wall : 50m')
 
 plt.show()
+
